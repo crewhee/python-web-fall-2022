@@ -27,6 +27,6 @@ def read_hello(name: str, q: Union[str, None] = None):
 @app.post("/post_method")
 def post_with_body(request: RequestBody):
     return {"Name": request.name,
-        "Description": request.description,
-        "Square": 0 if request.some_number is None else request.some_number ** 2
-        }
+            "Description": request.description,
+            "Square": 0 if request.some_number is None else request.some_number ** 2
+            }
