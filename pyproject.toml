@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "web-fall-2022"
+version = "0.0.1"
+description = "FastAPI app for Python Web course"
+authors = ["Crewhee <tony.sudov@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "web_fall_2022"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.85.0"
+uvicorn = {extras = ["standard"], version = "^0.18.3"}
+requests = "^2.28.1"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^5.0.4"
+flake8-bugbear = "^22.9.11"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
