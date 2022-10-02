@@ -5,11 +5,14 @@ from definitions.builds.service_pb2_grpc import MyServiceStub
 
 from fastapi import FastAPI
 from typing import Union
-from models.polynomial_models import PolynomialAnswerResponse, PolynomialErrorResponse, PolynomialTaskRequest
+from models.polynomial_models import (PolynomialAnswerResponse,
+                                      PolynomialErrorResponse,
+                                      PolynomialTaskRequest)
 
 app = FastAPI()
 
 PolyAnswerType = Union[PolynomialAnswerResponse, PolynomialErrorResponse]
+
 
 @app.post("/count")
 async def count_polynomial(p: PolynomialTaskRequest) -> PolyAnswerType:
@@ -31,7 +34,10 @@ async def count_polynomial(p: PolynomialTaskRequest) -> PolyAnswerType:
                 )
             )
         except grpc.RpcError as e:
-            return PolynomialErrorResponse(error="Got RpcException with code: " + str(e.code()))
+            return PolynomialErrorResponse(
+                error="Got RpcException with code: " +
+                      str(e.code())
+            )
         if result:
             return PolynomialAnswerResponse(result=result.y)
         else:

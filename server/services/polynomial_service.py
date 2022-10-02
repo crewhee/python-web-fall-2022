@@ -1,5 +1,5 @@
 class PolynomialService:
-    def count_polynomial(self, x : int, coefficients : list[int]) -> int:
+    def count_polynomial(self, x: int, coefficients: list[int]) -> int:
         """Count value of polynomial in point
 
         Args:
@@ -8,10 +8,10 @@ class PolynomialService:
 
         Returns:
             int: value in point
-        """        
-        l = len(coefficients) - 1
+        """
+        cur_pow = len(coefficients) - 1
         res = 0
         for c in coefficients:
-            res += (x ** l) * c
-            l -= 1
+            res += (x ** cur_pow) * c
+            cur_pow -= 1
         return res

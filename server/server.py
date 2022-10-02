@@ -4,24 +4,38 @@ import grpc
 from services.polynomial_service import PolynomialService
 
 from definitions.builds.service_pb2 import PolynomialResult, Hello
-from definitions.builds.service_pb2_grpc import MyServiceServicer, add_MyServiceServicer_to_server
+from definitions.builds.service_pb2_grpc import (
+    MyServiceServicer, add_MyServiceServicer_to_server)
 
 
 class Service(MyServiceServicer):
     def CountPolynomial(self, request, context):
-        """_summary_
+        """counts value of polynomial in point
 
         Args:
-            request (_type_): _description_
-            context (_type_): _description_
+            request (PolynomialTask): x and coefficients
+            context (_type_): unused
 
         Returns:
-            _type_: _description_
-        """        
+            PolynomialResult: Result in gRPC form
+        """
         s = PolynomialService()
-        return PolynomialResult(y=s.count_polynomial(request.x, request.coefficients))
-    
+        return PolynomialResult(y=s.count_polynomial(
+            request.x,
+            request.coefficients
+            )
+        )
+
     def GetHello(self, request, context):
+        """Simple method to test if anything works
+
+        Args:
+            request (Null): Empty request
+            context (_type_): unused
+
+        Returns:
+            Hello: Message with one string
+        """
         return Hello(greeting="Hello, friend")
 
 

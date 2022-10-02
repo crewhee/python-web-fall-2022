@@ -10,5 +10,6 @@ class PolynomialTaskRequest(BaseModel):
 class PolynomialErrorResponse(BaseModel):
     error: str
 
+
 class PolynomialAnswerResponse(BaseModel):
     result: int
