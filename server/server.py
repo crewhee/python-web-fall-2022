@@ -23,7 +23,7 @@ class Service(MyServiceServicer):
         return PolynomialResult(y=s.count_polynomial(
             request.x,
             request.coefficients
-            )
+        )
         )
 
     def GetHello(self, request, context):
