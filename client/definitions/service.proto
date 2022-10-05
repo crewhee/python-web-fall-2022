@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+message Null { }
+
+message PolynomialTask {
+    int32 x = 1;
+    repeated int32 coefficients = 2 [packed=true];
+}
+
+message PolynomialResult {
+    int32 y = 1;
+}
+
+message Hello {
+    string greeting = 1;
+}
+
+service MyService {
+    rpc CountPolynomial(PolynomialTask) returns (PolynomialResult);
+    rpc GetHello(Null) returns (Hello);
+}
