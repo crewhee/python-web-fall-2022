@@ -1,18 +1,24 @@
-from multiprocessing.sharedctypes import Value
 from time import sleep
+from typing import Union
 import uuid
-from xmlrpc.client import Boolean
 import pika
 import json
+import redis
 
 
-class CountReciever:
+class CountConsumer:
     def __init__(self):
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(host='localhost')
         )
         self.channel = self.connection.channel()
         self.channel.queue_declare('count_queue', durable=True)
+        self.r = redis.Redis(
+            host='127.0.0.1',
+            port=6379,
+            encoding='utf-8',
+            decode_responses=True
+        )
 
     def count_result(self, val: int) -> int:
         if not isinstance(val, int):
@@ -20,10 +26,17 @@ class CountReciever:
         sleep(5)
         return (val**3)
 
-    def save_result(self, uuid, res, err=False, err_info=None):
+    def save_result(self,
+                    uuid: uuid.UUID,
+                    res: int,
+                    err: bool = False,
+                    err_info: Union[str, None] = None
+                    ) -> None:
+        key = str(uuid)
         if err:
-            pass
-        pass
+            self.r.set(key, json.dumps({"err": True, "err_info": err_info}))
+        else:
+            self.r.set(key, res)
 
     def process_message(self, ch, method, properties, body) -> bool:
         """Process message from RabbitMQ.
@@ -52,18 +65,17 @@ class CountReciever:
         except ValueError:
             return False
         if "a" not in body_json:
-            self.save_result(body_json["uuid"], None, err=True, err_info="No value")
+            self.save_result(body_json["uuid"], None,
+                             err=True, err_info="No value")
             return False
         val = None
         try:
             val = int(body_json["a"])
         except ValueError:
-            self.save_result(body_json["uuid"], None, err=True, err_info="ValueError")
+            self.save_result(body_json["uuid"], None,
+                             err=True, err_info="ValueError")
             return False
-        # res = self.count_result(val)
-        res = 3
-        print(f"res = {res}")
-        print(body_json)
+        res = self.count_result(val)
         self.save_result(body_json["uuid"], res)
         return True
 
@@ -78,7 +90,7 @@ class CountReciever:
 
 
 def main():
-    c = CountReciever()
+    c = CountConsumer()
     c.listen()
 
 
