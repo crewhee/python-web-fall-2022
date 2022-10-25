@@ -1,19 +1,11 @@
 from fastapi import APIRouter
 import pika
 import json
-from pydantic import BaseModel, UUID4
+from ..models.request_models import RabbitCountRequest, RabbitCountUuid
 from uuid import uuid4
 import redis
 
 rabbit_router = APIRouter()
-
-
-class RabbitCountRequest(BaseModel):
-    value: int
-
-
-class RabbitCountUuid(BaseModel):
-    task_id: UUID4
 
 
 @rabbit_router.post("/rabbit_simple")

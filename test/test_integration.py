@@ -10,7 +10,6 @@ from consumer.consumer_count import CountConsumer
 
 
 class RabbitRedisIntegraion(unittest.TestCase):
-    subscriber = CountConsumer()
     client = TestClient(app)
 
     def setUp(self) -> None:
@@ -20,6 +19,8 @@ class RabbitRedisIntegraion(unittest.TestCase):
         super().__init__(methodName)
 
     def test_send_and_recieve_message(self):
+        subscriber = CountConsumer()
+
         key = uuid.uuid4()
         r = redis.Redis(
             host='127.0.0.1',
@@ -29,7 +30,7 @@ class RabbitRedisIntegraion(unittest.TestCase):
         )
 
         self.assertTrue(
-            self.subscriber
+            subscriber
                 .process_message(None, None, None, json.dumps({
                     "uuid": str(key),
                     "a": 4
@@ -64,11 +65,12 @@ class RabbitRedisIntegraion(unittest.TestCase):
         self.assertTrue('answer' in body)
         self.assertEqual(32**3, int(body['answer']))
 
-    def close(self) -> None:
-        self.r.close()
-        self.subscriber.r.close()
-        # self.subscriber.connection.close()
-        return super().tearDown()
+    # def tearDown(self) -> None:
+    #     self.r.close()
+    #     self.subscriber.r.close()
+    #     if self.subscriber.connection.is_open():
+    #         self.subscriber.connection.close()
+    #     return super().tearDown()
 
 
 if __name__ == "__main__":

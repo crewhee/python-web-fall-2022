@@ -8,6 +8,8 @@ import redis
 
 class CountConsumer:
     def __init__(self):
+        """Initiation of consumer. All values hardcoded :)
+        """
         self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(host='localhost')
         )
@@ -21,6 +23,14 @@ class CountConsumer:
         )
 
     def count_result(self, val: int) -> int:
+        """Evaluation code
+
+        Args:
+            val (int): value to process
+
+        Returns:
+            int: result
+        """
         if not isinstance(val, int):
             return 0
         sleep(5)
@@ -32,6 +42,15 @@ class CountConsumer:
                     err: bool = False,
                     err_info: Union[str, None] = None
                     ) -> None:
+        """Save result to Redis
+
+        Args:
+            uuid (uuid.UUID): uuid of task
+            res (int): result of evalution
+            err (bool, optional): flag of error. Defaults to False.
+            err_info (Union[str, None], optional):
+                info to safe if error encountered. Defaults to None.
+        """
         key = str(uuid)
         if err:
             self.r.set(key, json.dumps({"err": True, "err_info": err_info}))
@@ -79,7 +98,9 @@ class CountConsumer:
         self.save_result(body_json["uuid"], res)
         return True
 
-    def listen(self):
+    def listen(self) -> None:
+        """start consuming from queue
+        """
         self.channel.basic_consume(queue='count_queue',
                                    on_message_callback=self.process_message,
                                    auto_ack=True)
@@ -87,6 +108,10 @@ class CountConsumer:
 
     def stop(self):
         self.channel.stop_consuming()
+    
+    def __del__(self):
+        self.connection.close()
+        self.r.close()
 
 
 def main():
