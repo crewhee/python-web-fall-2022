@@ -1,0 +1,17 @@
+version: "3.1"
+
+services:
+        broker:
+                image: rabbitmq:management
+                ports:
+                        - 15672:15672
+                        - 5672:5672
+        # redis:
+        #         image: redis
+        #         container_name: redis
+        #         volumes:
+        #         - ./redis/data:/data
+        #         - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+        #         expose:
+        #         - 6379
+        #         command: redis-server /usr/local/etc/redis/redis.conf
